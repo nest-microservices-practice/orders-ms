@@ -2,6 +2,7 @@ import { Controller, NotImplementedException } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
+import { ChangeStatusOrderDto, OrderPaginationDTO } from './dto';
 
 @Controller()
 export class OrdersController {
@@ -9,25 +10,27 @@ export class OrdersController {
 
   @MessagePattern('createOrder')
   create(@Payload() createOrderDto: CreateOrderDto) {
-    // return this.ordersService.create(createOrderDto);
-    return 'order created successfully';
+    return this.ordersService.create(createOrderDto);
   }
 
   @MessagePattern('findAllOrders')
-  findAll() {
-    // return this.ordersService.findAll();
-    return 'orders found';
+  findAll(@Payload() orderPaginationDto: OrderPaginationDTO) {
+    // return orderPaginationDto;
+    return this.ordersService.findAll(orderPaginationDto);
   }
 
   @MessagePattern('findOneOrder')
-  findOne(@Payload() id: number) {
-    // return this.ordersService.findOne(id);
-    return `order with id ${id} found`;
+  findOne(@Payload() id: string) {
+    return this.ordersService.findOne(id);
+    // return `order with id ${id} found`;
   }
 
+
   @MessagePattern('changeOrderStatus')
-  changeStatus() {
-    // return this.ordersService.changeStatus();
-    throw new NotImplementedException();
+  changeStatus(
+    @Payload() changeStatusOrderDto: ChangeStatusOrderDto,
+  ) {
+    return this.ordersService.changeStatus(changeStatusOrderDto);
+    // throw new NotImplementedException();
   }
 }
